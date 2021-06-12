@@ -1,61 +1,30 @@
-<script type="text/javascript" language="javascript">
-    let authorization = "app_id=708dd5af&app_key=9c4a6fe58a057bde3f78a34e26f82844";
-    let base_ulr = "https://api.tmb.cat/v1";
-
-    let metro_lines_url = base_ulr + "/transit/linies/metro?" + authorization;
-
-
-    function UpdateMetroStations(ddlLines) {
-
-        let ddlStations = document.getElementById('metrostations-dropdown');
-
-        ddlStations.length = 0;
-
-        var selectedText = ddlLines.options[ddlLines.selectedIndex].innerHTML;
-        var selectedValue = ddlLines.value;
-        let metro_stations_url = base_ulr + "/transit/linies/metro/" + selectedValue + "/estacions?" + authorization;
-
-        
-
-        fetch(metro_stations_url)
-            .then(res => res.json())
-            // .then(console.log)
-            .then(data => {
-
-                ddlStations.length = 0;
-                // console.log(data.features.length);
-                let option;
-
-                for (let i = 0; i < data.features.length; i++) {
-                    console.log(data.features[i])
-                    option = document.createElement('option');
-                    option.text =  data.features[i].properties.NOM_ESTACIO;
-                    option.value = data.features[i].properties.CODI_ESTACIO;
-                    ddlStations.add(option);
-                }
-            }
-            );
-
-    }
-
-</script>
-
 <!DOCTYPE html>
 <html>
 
 <head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Malandriners al ataquer!</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/app.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
 </head>
 
 
 <body>
-
     <h1>Lineas</h1>
-    <select id="locality-dropdown" name="locality" onchange="UpdateMetroStations(this)">      
-    </select>
+    <select id="locality-dropdown" name="locality" onchange="UpdateMetroStations(this)">    </select>
     <select id="metrostations-dropdown" name="metrostations"></select>
 
-    
+    <div id="mapid"></div>
+
     <script>
 
 
@@ -64,7 +33,7 @@
         dropdown.length = 0;
 
         let defaultOption = document.createElement('option');
-        defaultOption.text = 'Choose State/Province';
+        defaultOption.text = 'Choose Metro line';
 
         dropdown.add(defaultOption);
         dropdown.selectedIndex = 0;
@@ -79,7 +48,7 @@
                 let option;
 
                 for (let i = 0; i < data.features.length; i++) {
-                    console.log(data.features[i])
+                    // console.log(data.features[i])
                     option = document.createElement('option');
                     option.text = data.features[i].properties.NOM_LINIA + " - " + data.features[i].properties.DESC_LINIA;
                     option.value = data.features[i].properties.CODI_LINIA;
