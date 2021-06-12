@@ -1,59 +1,96 @@
 <script type="text/javascript" language="javascript">
-let base_ulr = "https://api.tmb.cat/v1";
-// let metro_lines_url = base_ulr+"/transit/linies/bus/213/parades?app_id=708dd5af&app_key=9c4a6fe58a057bde3f78a34e26f82844"
-let metro_lines_url = base_ulr+"/transit/linies/metro?app_id=708dd5af&app_key=9c4a6fe58a057bde3f78a34e26f82844";
+    let authorization = "app_id=708dd5af&app_key=9c4a6fe58a057bde3f78a34e26f82844";
+    let base_ulr = "https://api.tmb.cat/v1";
+
+    let metro_lines_url = base_ulr + "/transit/linies/metro?" + authorization;
+
+
+    function UpdateMetroStations(ddlLines) {
+
+        let ddlStations = document.getElementById('metrostations-dropdown');
+
+        ddlStations.length = 0;
+
+        var selectedText = ddlLines.options[ddlLines.selectedIndex].innerHTML;
+        var selectedValue = ddlLines.value;
+        let metro_stations_url = base_ulr + "/transit/linies/metro/" + selectedValue + "/estacions?" + authorization;
+
+        
+
+        fetch(metro_stations_url)
+            .then(res => res.json())
+            // .then(console.log)
+            .then(data => {
+
+                ddlStations.length = 0;
+                // console.log(data.features.length);
+                let option;
+
+                for (let i = 0; i < data.features.length; i++) {
+                    console.log(data.features[i])
+                    option = document.createElement('option');
+                    option.text =  data.features[i].properties.NOM_ESTACIO;
+                    option.value = data.features[i].properties.CODI_ESTACIO;
+                    ddlStations.add(option);
+                }
+            }
+            );
+
+    }
+
 </script>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Malandriners al ataque!</title>
+    <title>Malandriners al ataquer!</title>
 </head>
 
 
 <body>
 
-<h1>Lineas</h1>
-<select id="locality-dropdown" name="locality">
-</select>
+    <h1>Lineas</h1>
+    <select id="locality-dropdown" name="locality" onchange="UpdateMetroStations(this)">      
+    </select>
+    <select id="metrostations-dropdown" name="metrostations"></select>
 
-</select>
-<script>
-
-
-let dropdown = document.getElementById('locality-dropdown');
-
-dropdown.length = 0;
-
-let defaultOption = document.createElement('option');
-defaultOption.text = 'Choose State/Province';
-
-dropdown.add(defaultOption);
-dropdown.selectedIndex = 0;
- 
+    
+    <script>
 
 
-fetch(metro_lines_url)
-    .then(res => res.json())
-    // .then(console.log)
-    .then (data => {
+        let dropdown = document.getElementById('locality-dropdown');
 
         dropdown.length = 0;
-        // console.log(data.features.length);
-        let option;
-        
-        for (let i = 0; i < data.features.length; i++) {
-            console.log(data.features[i])
-            option = document.createElement('option');
-            option.text = data.features[i].properties.DESC_LINIA;
-            option.value = data.features[i].properties.ID_LINIA;
-            dropdown.add(option);
-        }
-    }
-    );
+
+        let defaultOption = document.createElement('option');
+        defaultOption.text = 'Choose State/Province';
+
+        dropdown.add(defaultOption);
+        dropdown.selectedIndex = 0;
+
+        fetch(metro_lines_url)
+            .then(res => res.json())
+            // .then(console.log)
+            .then(data => {
+
+                dropdown.length = 0;
+                // console.log(data.features.length);
+                let option;
+
+                for (let i = 0; i < data.features.length; i++) {
+                    console.log(data.features[i])
+                    option = document.createElement('option');
+                    option.text = data.features[i].properties.NOM_LINIA + " - " + data.features[i].properties.DESC_LINIA;
+                    option.value = data.features[i].properties.CODI_LINIA;
+                    dropdown.add(option);
+                }
+            }
+            );
 
 
-</script>
+    </script>
 
 </body>
-</html> 
+
+</html>
