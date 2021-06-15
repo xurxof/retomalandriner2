@@ -13,10 +13,7 @@ function onEachFeature(feature, layer) {
 
 function UpdateMetroStations(ddlLines) {
 
-    let ddlStations = document.getElementById('metrostations-dropdown');
-
-    ddlStations.length = 0;
-
+    
     var selectedText = ddlLines.options[ddlLines.selectedIndex].innerHTML;
     var selectedValue = ddlLines.value;
     let metro_stations_url = base_ulr + "/transit/linies/metro/" + selectedValue + "/estacions?" + authorization;
@@ -28,17 +25,24 @@ function UpdateMetroStations(ddlLines) {
         // .then(console.log)
         .then(data => {
 
-            ddlStations.length = 0;
-            // console.log(data.features.length);
-            let option;
 
-            for (let i = 0; i < data.features.length; i++) {
-                console.log(data.features[i])
-                option = document.createElement('option');
-                option.text = data.features[i].properties.NOM_ESTACIO;
-                option.value = data.features[i].properties.CODI_ESTACIO;
-                ddlStations.add(option);
+            // Create the list element:
+            var list = document.createElement('ul');
+
+            for (var i = 0; i < data.features.length; i++) {
+                // Create the list item:
+                var item = document.createElement('li');
+
+                // Set its contents:
+                item.appendChild(document.createTextNode(data.features[i].properties.NOM_ESTACIO));
+
+                // Add it to the list:
+                list.appendChild(item);
             }
+
+
+document.getElementById('foo').appendChild(list);
+
             L.geoJSON(data).addTo(mymap);
 
             L.geoJSON(data, {
@@ -66,10 +70,10 @@ dropdown.selectedIndex = 0;
 
 fetch(metro_lines_url)
     .then(res => res.json())
-    // .then(console.log)
+    //.then(console.log)
     .then(data => {
 
-        dropdown.length = 0;
+        // dropdown.length = 0;
         // console.log(data.features.length);
         let option;
 
