@@ -13,7 +13,7 @@ function onEachFeature(feature, layer) {
 
 function UpdateMetroStations(ddlLines) {
 
-    
+
     var selectedText = ddlLines.options[ddlLines.selectedIndex].innerHTML;
     var selectedValue = ddlLines.value;
     let metro_stations_url = base_ulr + "/transit/linies/metro/" + selectedValue + "/estacions?" + authorization;
@@ -41,9 +41,22 @@ function UpdateMetroStations(ddlLines) {
             }
 
 
-document.getElementById('foo').appendChild(list);
+            fetch(metro_lines_url)
+                .then(res => res.json())
+                //.then(console.log)
+                .then(data => {
+                    for (let i = 0; i < data.features.length; i++) {
+                        if (data.features[i].properties.CODI_LINIA == selectedValue) {
+                            console.log(data.features[i].geometry);
 
-            L.geoJSON(data).addTo(mymap);
+                            L.geoJSON(data.features[i].geometry).addTo(mymap);
+                        }
+                    }
+                });
+
+            document.getElementById('foo').appendChild(list);
+
+            // L.geoJSON(data).addTo(mymap);
 
             L.geoJSON(data, {
                 onEachFeature: onEachFeature
