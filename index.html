@@ -8,7 +8,7 @@
 
     <title>Malandriners al ataquer!</title>
     <link rel="stylesheet" href="css/styles.css" />
-    <script src="js/app.js"></script>
+   
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin="" />
@@ -19,47 +19,13 @@
 
 
 <body>
-    <h1>Lineas</h1>
+    <h1>🚇  Lineas</h1>
     <select id="locality-dropdown" name="locality" onchange="UpdateMetroStations(this)">    </select>
     <select id="metrostations-dropdown" name="metrostations"></select>
-
+    <p></p>
     <div id="mapid"></div>
-
-    <script>
-
-
-        let dropdown = document.getElementById('locality-dropdown');
-
-        dropdown.length = 0;
-
-        let defaultOption = document.createElement('option');
-        defaultOption.text = 'Choose Metro line';
-
-        dropdown.add(defaultOption);
-        dropdown.selectedIndex = 0;
-
-        fetch(metro_lines_url)
-            .then(res => res.json())
-            // .then(console.log)
-            .then(data => {
-
-                dropdown.length = 0;
-                // console.log(data.features.length);
-                let option;
-
-                for (let i = 0; i < data.features.length; i++) {
-                    // console.log(data.features[i])
-                    option = document.createElement('option');
-                    option.text = data.features[i].properties.NOM_LINIA + " - " + data.features[i].properties.DESC_LINIA;
-                    option.value = data.features[i].properties.CODI_LINIA;
-                    dropdown.add(option);
-                }
-            }
-            );
-
-
-    </script>
-
+ 
+    <script src="js/app.js"></script>
 </body>
 
 </html>
