@@ -2,6 +2,7 @@ let authorization = "app_id=708dd5af&app_key=9c4a6fe58a057bde3f78a34e26f82844";
 let base_ulr = "https://api.tmb.cat/v1";
 
 let metro_lines_url = base_ulr + "/transit/linies/metro?" + authorization;
+let lines_json_cache = "";
 
 function onEachFeature(feature, layer) {
     // does this feature have a property named popupContent?
@@ -12,9 +13,7 @@ function onEachFeature(feature, layer) {
 
 
 function UpdateMetroStations(ddlLines) {
-
-
-    var selectedText = ddlLines.options[ddlLines.selectedIndex].innerHTML;
+    // var selectedText = ddlLines.options[ddlLines.selectedIndex].innerHTML;
     var selectedValue = ddlLines.value;
     let metro_stations_url = base_ulr + "/transit/linies/metro/" + selectedValue + "/estacions?" + authorization;
 
@@ -24,43 +23,32 @@ function UpdateMetroStations(ddlLines) {
         .then(res => res.json())
         // .then(console.log)
         .then(data => {
-
-
+            let StopListElement = document.getElementById("stopList");
+            
+            // if (oldStopList!=null) oldStopList.remove();
+            // oldStopList.remove();
             // Create the list element:
-            var list = document.createElement('ul');
-
+            // var list = document.createElement('div');
+            // list.setAttribute("id", "stopList");
+            let StopList = "";
             for (var i = 0; i < data.features.length; i++) {
-                // Create the list item:
-                var item = document.createElement('li');
-
-                // Set its contents:
-                item.appendChild(document.createTextNode(data.features[i].properties.NOM_ESTACIO));
-
-                // Add it to the list:
-                list.appendChild(item);
+                // var item = document.createElement('li');
+                // item.appendChild(document.createTextNode(data.features[i].properties.NOM_ESTACIO));
+                // list.appendChild(item);
+                StopList = StopList + data.features[i].properties.NOM_ESTACIO + " ➜ ";
             }
+            StopListElement.innerHTML = StopList
 
+            for (let i = 0; i < lines_json_cache.features.length; i++) {
+                if (lines_json_cache.features[i].properties.CODI_LINIA == selectedValue) {
+                    console.log(lines_json_cache.features[i].geometry);
 
-            fetch(metro_lines_url)
-                .then(res => res.json())
-                //.then(console.log)
-                .then(data => {
-                    for (let i = 0; i < data.features.length; i++) {
-                        if (data.features[i].properties.CODI_LINIA == selectedValue) {
-                            console.log(data.features[i].geometry);
-
-                            L.geoJSON(data.features[i].geometry).addTo(mymap);
-                        }
-                    }
-                });
-
-            document.getElementById('foo').appendChild(list);
-
-            // L.geoJSON(data).addTo(mymap);
-
-            L.geoJSON(data, {
-                onEachFeature: onEachFeature
-            }).addTo(mymap);
+                    L.geoJSON(lines_json_cache.features[i].geometry).addTo(mymap);
+                }
+            }
+            //L.geoJSON(data, {
+            //onEachFeature: onEachFeature
+            //}).addTo(mymap);
 
         }
         );
@@ -85,7 +73,7 @@ fetch(metro_lines_url)
     .then(res => res.json())
     //.then(console.log)
     .then(data => {
-
+        lines_json_cache = data;
         // dropdown.length = 0;
         // console.log(data.features.length);
         let option;
@@ -98,7 +86,7 @@ fetch(metro_lines_url)
             dropdown.add(option);
         }
         dropdown.selectedIndex = 0;
-        UpdateMetroStations();
+        // UpdateMetroStations();
     }
     );
 
