@@ -3,6 +3,7 @@ let base_ulr = "https://api.tmb.cat/v1";
 
 let metro_lines_url = base_ulr + "/transit/linies/metro?" + authorization;
 let lines_json_cache = "";
+let lastpolygon = null;
 
 function onEachFeature(feature, layer) {
     // does this feature have a property named popupContent?
@@ -38,12 +39,18 @@ function UpdateMetroStations(ddlLines) {
                 StopList = StopList + data.features[i].properties.NOM_ESTACIO + " ➜ ";
             }
             StopListElement.innerHTML = StopList
-
+            if (lastpolygon!=null) {lastpolygon.remove();}
             for (let i = 0; i < lines_json_cache.features.length; i++) {
                 if (lines_json_cache.features[i].properties.CODI_LINIA == selectedValue) {
                     console.log(lines_json_cache.features[i].geometry);
 
-                    L.geoJSON(lines_json_cache.features[i].geometry).addTo(mymap);
+                    polygon = L.geoJSON(lines_json_cache.features[i].geometry);
+                    polygon.addTo(mymap);
+                    lastpolygon = polygon;
+                    
+                    mymap.fitBounds(polygon.getBounds());
+
+
                 }
             }
             //L.geoJSON(data, {
