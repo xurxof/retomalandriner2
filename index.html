@@ -8,23 +8,31 @@
 
     <title>Malandriners al ataquer!</title>
     <link rel="stylesheet" href="css/styles.css" />
-   
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
         crossorigin=""></script>
+
+
+    <!-- Leaflet-search assets -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-search@2.9.8/dist/leaflet-search.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-search@2.9.8/dist/leaflet-search.src.js"></script>
+
+
+    <script defer src="js/app.js"></script>
 </head>
 
 
 <body>
-    <h1>🚇  Lineas</h1>
-    <select id="locality-dropdown" name="locality" onchange="UpdateMetroStations(this)">    </select>
-    <div id="foo"></div><p id="stopList"></p>
+    <h1>🚇 Metro Viewer [Malandriner Edition] </h1>
+    <select id="locality-dropdown" name="locality" onchange="UpdateMetroStations(this)"> </select>
+    <div id="foo"></div>
+    <p id="stopList"></p>
     <div id="mapid"></div>
- 
-    <script src="js/app.js"></script>
+
 </body>
 
 </html>
