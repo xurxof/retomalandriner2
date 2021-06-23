@@ -14,12 +14,14 @@ function whenClicked(e) {
     console.log(e);
     // You can make your ajax call declaration here
     //$.ajax(... 
+    selectedFeature = e.target;
+    selectedFeature.setOpacity(1);
+    console.log (selectedFeature);
+    // fetch(metro_time_url)
+    //     .then(res => res.json())
+    //     .then(data => {
 
-    fetch(metro_time_url)
-        .then(res => res.json())
-        .then(data => {
-
-        });
+    //     });
 }
 
 
@@ -28,6 +30,7 @@ function onEachFeature(feature, layer) {
     if (feature.properties && feature.properties.NOM_PARADA) {
         layer.bindPopup(feature.properties.NOM_PARADA);
     }
+    layer.setOpacity(0);
     layer.on({
         click: whenClicked
     });
@@ -144,6 +147,8 @@ var searchControl = new L.Control.Search({
 
         map.once('moveend', function(){
           latlng.layer.openPopup();
+
+          latlng.layer.setOpacity(1);
         })
      }
 });     
