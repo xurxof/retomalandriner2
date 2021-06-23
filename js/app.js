@@ -16,7 +16,7 @@ function whenClicked(e) {
     //$.ajax(... 
     selectedFeature = e.target;
     selectedFeature.setOpacity(1);
-    console.log (selectedFeature);
+    console.log(selectedFeature);
     // fetch(metro_time_url)
     //     .then(res => res.json())
     //     .then(data => {
@@ -128,35 +128,39 @@ L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 
 let busLayer = null;
-
+let lastBusMarker = null;
 fetch(bus_stops_url)
     .then(res => res.json())
     .then(data => {
         busLayer = L.geoJSON(data, {
             onEachFeature: onEachFeature
         });
-        
-        busLayer.addTo(mymap); 
-           
-var searchControl = new L.Control.Search({
-    layer: busLayer,
-    propertyName: 'NOM_PARADA',
-    marker: false,
-     moveToLocation: function(latlng, title, map) {
-        map.flyTo(latlng, 18);
 
-        map.once('moveend', function(){
-          latlng.layer.openPopup();
+        busLayer.addTo(mymap);
 
-          latlng.layer.setOpacity(1);
-        })
-     }
-});     
+        var searchControl = new L.Control.Search({
+            layer: busLayer,
+            propertyName: 'NOM_PARADA',
+            marker: false,
+            moveToLocation: function (latlng, title, map) {
+                map.flyTo(latlng, 18);
+
+                map.once('moveend', function () {
+                    latlng.layer.openPopup();
+
+                    latlng.layer.setOpacity(1);
+                    if (lastBusMarker != null) {
+                        lastBusMarker.setOpacity(0);
+                    }
+                    lastBusMarker = latlng.layer;
+                })
+            }
+        });
 
 
-mymap.addControl(searchControl);
+        mymap.addControl(searchControl);
     });
- 
+
 
 // searchControl.on('search:locationfound', function(e) {
 
