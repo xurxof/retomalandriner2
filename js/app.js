@@ -4,7 +4,7 @@ let base_ulr = "https://api.tmb.cat/v1";
 let metro_lines_url = base_ulr + "/transit/linies/metro?" + authorization;
 let bus_stops_url = base_ulr + "/transit/parades?" + authorization;
 // bus_stops_url = base_ulr + "/transit/estacions?" + authorization;
-let metro_time_url = base_ulr + "/transit/estacions?" + authorization;
+// let bus_time_url = base_ulr + "/transit/parades?" + authorization;
 let lines_json_cache = "";
 let lastpolygon = null;
 
@@ -27,13 +27,13 @@ function whenClicked(e) {
 
 function onEachFeature(feature, layer) {
     // does this feature have a property named popupContent?
-    if (feature.properties && feature.properties.NOM_PARADA) {
-        layer.bindPopup(feature.properties.NOM_PARADA);
-    }
+    // if (feature.properties && feature.properties.NOM_PARADA) {
+    //     layer.bindPopup(feature.properties.NOM_PARADA);
+    // }
     layer.setOpacity(0);
-    layer.on({
-        click: whenClicked
-    });
+    // layer.on({
+    //     click: whenClicked
+    // });
 }
 
 
@@ -102,7 +102,26 @@ function UpdateMetroStations(ddlLines) {
 
 }
 
+function SetBusStationData(marker, codi_parada, description) {
+    let bus_times_url = base_ulr + "/ibus/stops/" + codi_parada + "?" + authorization;
 
+    let res = fetch(bus_times_url)
+        .then(res => res.json())
+        .then(json_data => {
+            // latlng.layer.bindPopup( + '<p></p>' + time_data);
+            let stop_data = "";
+            console.log(json_data);
+            for (var i = 0; i < json_data.data.ibus.length; i++) {
+                stop_data = stop_data +  "Linea: " + json_data.data.ibus[i].line + " / Tiempo:  "+   json_data.data.ibus[i]["text-ca"] + " / Destino:  "+   json_data.data.ibus[i].destination;
+            }
+            marker.bindPopup("<b>" + description + "</b><p>" + stop_data);
+            marker.openPopup();
+            marker.setOpacity(1);
+        });
+
+}
+
+//////////////////////////
 
 let dropdown = document.getElementById('locality-dropdown');
 
@@ -140,19 +159,22 @@ fetch(bus_stops_url)
 
         var searchControl = new L.Control.Search({
             layer: busLayer,
-            propertyName: 'NOM_PARADA',
+            propertyName: 'CODI_PARADA',
             marker: false,
             moveToLocation: function (latlng, title, map) {
                 map.flyTo(latlng, 18);
 
                 map.once('moveend', function () {
-                    latlng.layer.openPopup();
+                    bus_stop_description = latlng.layer.feature.properties.CODI_PARADA + ' - ' + latlng.layer.feature.properties.NOM_PARADA;
+                    bus_stop_cod = latlng.layer.feature.properties.CODI_PARADA;
+                    SetBusStationData(latlng.layer, bus_stop_cod, bus_stop_description);
 
-                    latlng.layer.setOpacity(1);
                     if (lastBusMarker != null) {
                         lastBusMarker.setOpacity(0);
                     }
                     lastBusMarker = latlng.layer;
+
+                    // find next time
                 })
             }
         });
@@ -179,6 +201,8 @@ fetch(bus_stops_url)
 // 	});	
 // });
 
+
+
 fetch(metro_lines_url)
     .then(res => res.json())
     //.then(console.log)
@@ -200,5 +224,4 @@ fetch(metro_lines_url)
 
         // search
 
-    }
-    );
+    });
