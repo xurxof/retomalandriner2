@@ -112,9 +112,9 @@ function SetBusStationData(marker, codi_parada, description) {
             let stop_data = "";
             console.log(json_data);
             for (var i = 0; i < json_data.data.ibus.length; i++) {
-                stop_data = stop_data +  "Linea: " + json_data.data.ibus[i].line + " / Tiempo:  "+   json_data.data.ibus[i]["text-ca"] + " / Destino:  "+   json_data.data.ibus[i].destination;
+                stop_data = stop_data +  "<br>Linea: " + json_data.data.ibus[i].line + " / Tiempo:  "+   json_data.data.ibus[i]["text-ca"] + " / Dest.:  "+   json_data.data.ibus[i].destination;
             }
-            marker.bindPopup("<b>" + description + "</b><p>" + stop_data);
+            marker.bindPopup("<b>" + description + "</b>" + stop_data);
             marker.openPopup();
             marker.setOpacity(1);
         });
@@ -158,11 +158,15 @@ fetch(bus_stops_url)
         busLayer.addTo(mymap);
 
         var searchControl = new L.Control.Search({
+            position:'topright',	
             layer: busLayer,
+            initial: false,
             propertyName: 'CODI_PARADA',
             marker: false,
+            zoom: 12,
+
             moveToLocation: function (latlng, title, map) {
-                map.flyTo(latlng, 18);
+                map.flyTo(latlng, 13);
 
                 map.once('moveend', function () {
                     bus_stop_description = latlng.layer.feature.properties.CODI_PARADA + ' - ' + latlng.layer.feature.properties.NOM_PARADA;
